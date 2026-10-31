@@ -158,22 +158,29 @@ export default function DistributionPage() {
       </header>
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
-        {/* Tarjeta de bienvenida original restaurada */}
+        {/* Tarjeta de bienvenida actualizada: Solo degradado azul, con holgura para que no se corte y desplazada a la izquierda */}
         <section
-          className="relative overflow-hidden rounded-3xl mb-8 min-h-[150px] sm:min-h-[180px] flex items-center shadow-2xl"
+          className="relative overflow-hidden rounded-3xl mb-8 min-h-[180px] sm:min-h-[200px] flex items-center shadow-2xl py-6"
           style={{
-            background: 'linear-gradient(135deg, #144979 0%, #0B2540 55%, #FF8F1C 140%)',
+            background: 'linear-gradient(135deg, #144979 0%, #0B2540 100%)',
             border: '1px solid rgba(255, 143, 28, 0.25)',
           }}
         >
-          <AppImage
-            src="/assets/images/menu-welcome-banner.png"
-            alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
-            width={400}
-            height={300}
-            className="absolute right-0 top-0 h-full w-3/5 object-cover opacity-60 pointer-events-none"
-          />
-          <div className="relative z-10 p-6 sm:p-8 max-w-[70%]">
+          {/* Contenedor de la imagen: corrida más a la izquierda y con espacio superior e inferior */}
+          <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 h-[90%] w-1/2 sm:w-2/5 flex items-center justify-end pointer-events-none overflow-hidden opacity-80">
+            <AppImage
+              src="/assets/images/welcomebaner.png"
+              alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
+              width={400}
+              height={300}
+              className="h-full w-auto object-contain translate-x-2 sm:-translate-x-2 filter drop-shadow-[0_4px_20px_rgba(255,143,28,0.3)]"
+            />
+          </div>
+
+          {/* Degradado lateral para fundir la imagen con el fondo azul y mantener el texto legible */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B2540] via-[#0B2540]/80 sm:via-[#0B2540]/50 to-transparent pointer-events-none" />
+
+          <div className="relative z-10 p-6 sm:p-8 max-w-[85%] sm:max-w-[65%]">
             <h1 className="text-white text-2xl sm:text-4xl font-black leading-tight">
               ¡Te damos la bienvenida{userName ? `, ${userName}` : ''}!
             </h1>
