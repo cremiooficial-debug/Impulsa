@@ -15,7 +15,7 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    title: 'Clases',
+    title: 'Clases y Asesoreías',
     description: 'Accede a las clases teóricas y prácticas del programa.',
     image: '/assets/images/iconclases.png',
     alt: 'Icono de clases y videos educativos',
@@ -94,25 +94,21 @@ export default function DistributionPage() {
         background: 'linear-gradient(180deg, #030C16 0%, #071628 100%)',
       }}
     >
-      {/* Reflejos naranjas y azules ambientales intensificados en el fondo */}
+      {/* Reflejos naranjas y azules ambientales en el fondo con puntos espaciados */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Reflejo naranja superior derecho más denso y visible */}
         <div 
           className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-35 blur-[100px]"
           style={{ background: 'radial-gradient(circle, rgba(255,143,28,0.5) 0%, transparent 70%)' }}
         />
-        {/* Reflejo azul medio izquierdo */}
         <div 
           className="absolute top-1/3 -left-40 w-[650px] h-[650px] rounded-full opacity-25 blur-[120px]"
           style={{ background: 'radial-gradient(circle, rgba(20,73,121,0.6) 0%, transparent 70%)' }}
         />
-        {/* Reflejo naranja inferior central más vivo */}
         <div 
           className="absolute -bottom-40 left-1/4 w-[650px] h-[650px] rounded-full opacity-30 blur-[110px]"
           style={{ background: 'radial-gradient(circle, rgba(255,115,0,0.45) 0%, transparent 70%)' }}
         />
 
-        {/* Patrón de puntos espaciados sutiles */}
         <div 
           className="absolute inset-0 opacity-25"
           style={{
@@ -162,11 +158,12 @@ export default function DistributionPage() {
       </header>
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
+        {/* Tarjeta de bienvenida original restaurada */}
         <section
           className="relative overflow-hidden rounded-3xl mb-8 min-h-[150px] sm:min-h-[180px] flex items-center shadow-2xl"
           style={{
-            background: 'linear-gradient(135deg, #071628 0%, #0f294a 50%, #144979 100%)',
-            border: '1px solid rgba(255, 143, 28, 0.2)',
+            background: 'linear-gradient(135deg, #144979 0%, #0B2540 55%, #FF8F1C 140%)',
+            border: '1px solid rgba(255, 143, 28, 0.25)',
           }}
         >
           <AppImage
@@ -174,13 +171,7 @@ export default function DistributionPage() {
             alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
             width={400}
             height={300}
-            className="absolute right-0 top-0 h-full w-3/5 object-cover opacity-60 pointer-events-none mix-blend-luminosity hover:mix-blend-normal transition-all"
-          />
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(90deg, #071628 40%, rgba(7,22,40,0.6) 70%, transparent 100%)'
-            }}
+            className="absolute right-0 top-0 h-full w-3/5 object-cover opacity-60 pointer-events-none"
           />
           <div className="relative z-10 p-6 sm:p-8 max-w-[70%]">
             <h1 className="text-white text-2xl sm:text-4xl font-black leading-tight">
