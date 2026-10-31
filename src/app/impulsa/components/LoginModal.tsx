@@ -94,7 +94,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         onClick={onClose}
       />
       <div
-        className="relative w-full max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/12 shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/12 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'rgba(11, 37, 64, 0.97)' }}
       >
         <button
@@ -134,18 +134,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <>
-            {/* Logo y Encabezado del Modal con tamaño optimizado y visible en móviles */}
-            <div className="flex flex-col items-center mb-4 sm:mb-6">
-              <div 
-                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-2xl shadow-lg mb-2.5 sm:mb-3 p-2"
-                style={{
-                  background: 'linear-gradient(135deg, #0f294a 0%, #071628 100%)',
-                  border: '1px solid rgba(255, 143, 28, 0.3)',
-                }}
-              >
-                <LoginLogo size={42} />
+            {/* Logo y Encabezado del Modal con tamaño proporcional (aprox 1/3 del ancho del modal) */}
+            <div className="flex flex-col items-center mb-5 sm:mb-6">
+              <div className="mb-3 flex justify-center">
+                <LoginLogo />
               </div>
-              <h3 id="login-modal-title" className="text-white text-lg sm:text-xl font-extrabold mb-1 text-center">
+              <h3 id="login-modal-title" className="text-white text-xl sm:text-2xl font-extrabold mb-1 text-center">
                 Inicia sesión
               </h3>
               <p className="text-slate-400 text-xs sm:text-sm font-medium text-center">

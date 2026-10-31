@@ -5,40 +5,42 @@ import AppIcon from './AppIcon';
 import AppImage from './AppImage';
 
 interface LoginLogoProps {
-  src?: string; 
-  text?: string; 
-  iconName?: string; 
-  size?: number; 
-  className?: string; 
-  onClick?: () => void; 
+  src?: string; // Image source (optional)
+  text?: string; // Logo text (optional)
+  iconName?: string; // Icon name when no image
+  size?: number; // Size for icon/image
+  className?: string; // Additional classes
+  onClick?: () => void; // Click handler
 }
 
 export default function LoginLogo({
   src = '/assets/images/impulsalogo1.png',
   text,
   iconName = 'SparklesIcon',
-  size = 40, // Tamaño base más compacto para móviles
+  size = 120,
   className = '',
   onClick,
 }: LoginLogoProps) {
   return (
     <div
-      className={`flex items-center gap-2 ${onClick ? 'cursor-pointer hover:opacity-80' : ''} ${className}`}
+      className={`flex items-center justify-center ${onClick ? 'cursor-pointer hover:opacity-80' : ''} ${className}`}
       onClick={onClick}
     >
+      {/* Show image if src provided, otherwise show icon */}
       {src ? (
         <AppImage 
           src={src} 
-          alt="Logo" 
+          alt="Impulsa UCV Logo" 
           width={size} 
           height={size} 
-          // Cambiamos w-full h-full por un tamaño controlado responsivo (más pequeño en móviles, normal en pantallas grandes)
-          className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0" 
+          // Ancho responsivo: abarca aprox 1/3 del modal en móviles (w-28) y crece sutilmente en PC (sm:w-36)
+          className="w-28 sm:w-36 h-auto object-contain flex-shrink-0" 
         />
       ) : (
         <AppIcon name={iconName} size={size} className="flex-shrink-0" />
       )}
 
+      {/* Show text if provided */}
       {text && <span className="text-xl font-bold">{text}</span>}
     </div>
   );
