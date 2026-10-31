@@ -46,7 +46,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setErrorMsg('');
 
     try {
-      // Consulta directa y segura a la tabla 'usuarios'
       const { data, error } = await supabase
         .from('usuarios')
         .select('*')
@@ -67,12 +66,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         return;
       }
 
-      // 2. Guardar sesión y marcar éxito
       localStorage.setItem('user_session', JSON.stringify(data));
       setIsLoading(false);
       setSuccess(true);
 
-      // 3. Redirigir automáticamente a la app de costos después de 1 segundo
       setTimeout(() => {
         onClose();
         router.push('/distribution');
@@ -87,7 +84,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
@@ -97,14 +94,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         onClick={onClose}
       />
       <div
-        className="relative w-full max-w-md rounded-3xl p-8 border border-white/12 shadow-2xl"
+        className="relative w-full max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/12 shadow-2xl max-h-[90vh] overflow-y-auto"
         style={{ background: 'rgba(11, 37, 64, 0.97)' }}
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Cerrar"
-          className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
         >
           <Icon name="XMarkIcon" size={18} />
         </button>
@@ -137,29 +134,37 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <>
-            {/* Logo y Encabezado del Modal */}
-            <div className="flex flex-col items-center mb-6">
-              <LoginLogo />
-              <h3 id="login-modal-title" className="text-white text-xl font-extrabold mb-1 text-center mt-3">
+            {/* Logo y Encabezado del Modal con tamaño reducido en móviles */}
+            <div className="flex flex-col items-center mb-4 sm:mb-6">
+              <div 
+                className="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl sm:rounded-2xl shadow-lg mb-2 sm:mb-3 p-1.5 sm:p-2"
+                style={{
+                  background: 'linear-gradient(135deg, #0f294a 0%, #071628 100%)',
+                  border: '1px solid rgba(255, 143, 28, 0.3)',
+                }}
+              >
+                <LoginLogo size={32} />
+              </div>
+              <h3 id="login-modal-title" className="text-white text-lg sm:text-xl font-extrabold mb-1 text-center">
                 Inicia sesión
               </h3>
-              <p className="text-slate-400 text-sm font-medium text-center">
+              <p className="text-slate-400 text-xs sm:text-sm font-medium text-center">
                 Accede a tu cuenta de IMPULSA UCV.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
               <div>
                 <label
                   htmlFor="login-email"
-                  className="block text-xs font-bold mb-2 uppercase tracking-wider text-slate-300"
+                  className="block text-xs font-bold mb-1.5 sm:mb-2 uppercase tracking-wider text-slate-300"
                 >
                   Correo electrónico
                 </label>
                 <input
                   id="login-email"
                   type="email"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-400 focus:outline-none focus:border-[#FF8F1C] transition-colors"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-white/5 border border-white/15 text-white text-sm placeholder-slate-400 focus:outline-none focus:border-[#FF8F1C] transition-colors"
                   placeholder="tu.correo@ucv.ve"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -169,14 +174,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <div>
                 <label
                   htmlFor="login-password"
-                  className="block text-xs font-bold mb-2 uppercase tracking-wider text-slate-300"
+                  className="block text-xs font-bold mb-1.5 sm:mb-2 uppercase tracking-wider text-slate-300"
                 >
                   Contraseña
                 </label>
                 <input
                   id="login-password"
                   type="password"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-400 focus:outline-none focus:border-[#FF8F1C] transition-colors"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-white/5 border border-white/15 text-white text-sm placeholder-slate-400 focus:outline-none focus:border-[#FF8F1C] transition-colors"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -193,7 +198,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed text-[#030C16] cursor-pointer"
+                className="w-full py-3 sm:py-3.5 rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed text-[#030C16] cursor-pointer"
                 style={{
                   background: 'linear-gradient(135deg, #FF8F1C 0%, #FF7300 100%)',
                   boxShadow: '0 8px 30px rgba(255, 143, 28, 0.45)',
