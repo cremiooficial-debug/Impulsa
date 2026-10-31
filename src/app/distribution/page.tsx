@@ -158,33 +158,37 @@ export default function DistributionPage() {
       </header>
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
-        {/* Tarjeta de bienvenida actualizada: Solo degradado azul, con holgura para que no se corte y desplazada a la izquierda */}
+        {/* Banner de bienvenida con el texto movido a la derecha (plpad/ml más amplio) */}
         <section
-          className="relative overflow-hidden rounded-3xl mb-8 min-h-[180px] sm:min-h-[200px] flex items-center shadow-2xl py-6"
+          className="relative overflow-hidden rounded-3xl mb-8 min-h-[190px] sm:min-h-[210px] flex items-center shadow-2xl py-6"
           style={{
-            background: 'linear-gradient(135deg, #144979 0%, #0B2540 100%)',
-            border: '1px solid rgba(255, 143, 28, 0.25)',
+            background: 'linear-gradient(135deg, #1A5A96 0%, #0F3A66 45%, #07192C 100%)',
+            border: '1px solid rgba(255, 143, 28, 0.35)',
           }}
         >
-          {/* Contenedor de la imagen: corrida más a la izquierda y con espacio superior e inferior */}
-          <div className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 h-[90%] w-1/2 sm:w-2/5 flex items-center justify-end pointer-events-none overflow-hidden opacity-80">
+          {/* Destello de luz ambiental interno */}
+          <div 
+            className="absolute -left-10 -top-10 w-[250px] h-[250px] rounded-full blur-[70px] pointer-events-none"
+            style={{ background: 'rgba(255, 143, 28, 0.15)' }}
+          />
+
+          {/* Contenedor de la imagen */}
+          <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 h-[90%] w-1/2 sm:w-2/5 flex items-center justify-end pointer-events-none">
             <AppImage
-              src="/assets/images/welcomebaner.png"
+              src="/assets/images/welcomebanner.png"
               alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
               width={400}
               height={300}
-              className="h-full w-auto object-contain translate-x-2 sm:-translate-x-2 filter drop-shadow-[0_4px_20px_rgba(255,143,28,0.3)]"
+              className="h-full w-auto object-contain -translate-x-6 sm:-translate-x-12 filter contrast-125 brightness-110 drop-shadow-[0_0_20px_rgba(255,143,28,0.5)]"
             />
           </div>
 
-          {/* Degradado lateral para fundir la imagen con el fondo azul y mantener el texto legible */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B2540] via-[#0B2540]/80 sm:via-[#0B2540]/50 to-transparent pointer-events-none" />
-
-          <div className="relative z-10 p-6 sm:p-8 max-w-[85%] sm:max-w-[65%]">
-            <h1 className="text-white text-2xl sm:text-4xl font-black leading-tight">
+          {/* Texto desplazado más a la derecha con un margen inicial (pl-6 sm:pl-12) */}
+          <div className="relative z-10 pl-8 sm:pl-16 pr-6 py-4 max-w-[85%] sm:max-w-[65%]">
+            <h1 className="text-white text-2xl sm:text-4xl font-black leading-tight drop-shadow-md">
               ¡Te damos la bienvenida{userName ? `, ${userName}` : ''}!
             </h1>
-            <p className="text-slate-200 text-sm sm:text-base font-medium mt-2">
+            <p className="text-slate-200 text-sm sm:text-base font-medium mt-2 drop-shadow">
               Elige una herramienta para impulsar tu negocio.
             </p>
           </div>
