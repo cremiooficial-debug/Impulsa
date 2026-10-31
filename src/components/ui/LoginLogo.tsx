@@ -5,19 +5,19 @@ import AppIcon from './AppIcon';
 import AppImage from './AppImage';
 
 interface LoginLogoProps {
-  src?: string; // Image source (optional)
-  text?: string; // Logo text (optional)
-  iconName?: string; // Icon name when no image
-  size?: number; // Size for icon/image
-  className?: string; // Additional classes
-  onClick?: () => void; // Click handler
+  src?: string; 
+  text?: string; 
+  iconName?: string; 
+  size?: number; 
+  className?: string; 
+  onClick?: () => void; 
 }
 
 export default function LoginLogo({
   src = '/assets/images/impulsalogo1.png',
   text,
   iconName = 'SparklesIcon',
-  size = 64,
+  size = 40, // Tamaño base más compacto para móviles
   className = '',
   onClick,
 }: LoginLogoProps) {
@@ -26,20 +26,19 @@ export default function LoginLogo({
       className={`flex items-center gap-2 ${onClick ? 'cursor-pointer hover:opacity-80' : ''} ${className}`}
       onClick={onClick}
     >
-      {/* Show image if src provided, otherwise show icon */}
       {src ? (
         <AppImage 
           src={src} 
           alt="Logo" 
           width={size} 
           height={size} 
-          className="w-full h-full object-contain flex-shrink-0" 
+          // Cambiamos w-full h-full por un tamaño controlado responsivo (más pequeño en móviles, normal en pantallas grandes)
+          className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0" 
         />
       ) : (
         <AppIcon name={iconName} size={size} className="flex-shrink-0" />
       )}
 
-      {/* Show text if provided */}
       {text && <span className="text-xl font-bold">{text}</span>}
     </div>
   );

@@ -134,16 +134,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <>
-            {/* Logo y Encabezado del Modal con tamaño reducido en móviles */}
+            {/* Logo y Encabezado del Modal con tamaño optimizado y visible en móviles */}
             <div className="flex flex-col items-center mb-4 sm:mb-6">
               <div 
-                className="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl sm:rounded-2xl shadow-lg mb-2 sm:mb-3 p-1.5 sm:p-2"
+                className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-2xl shadow-lg mb-2.5 sm:mb-3 p-2"
                 style={{
                   background: 'linear-gradient(135deg, #0f294a 0%, #071628 100%)',
                   border: '1px solid rgba(255, 143, 28, 0.3)',
                 }}
               >
-                <LoginLogo size={32} />
+                <LoginLogo size={42} />
               </div>
               <h3 id="login-modal-title" className="text-white text-lg sm:text-xl font-extrabold mb-1 text-center">
                 Inicia sesión
