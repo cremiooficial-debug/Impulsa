@@ -158,9 +158,9 @@ export default function DistributionPage() {
       </header>
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
-        {/* Banner de bienvenida con el texto movido a la derecha (plpad/ml más amplio) */}
+        {/* Banner de bienvenida responsivo: en celular se apila (flex-col) y en PC se pone lado a lado (sm:flex-row) */}
         <section
-          className="relative overflow-hidden rounded-3xl mb-8 min-h-[190px] sm:min-h-[210px] flex items-center shadow-2xl py-6"
+          className="relative overflow-hidden rounded-3xl mb-8 flex flex-col sm:flex-row items-center justify-between shadow-2xl p-6 sm:p-8 gap-4"
           style={{
             background: 'linear-gradient(135deg, #1A5A96 0%, #0F3A66 45%, #07192C 100%)',
             border: '1px solid rgba(255, 143, 28, 0.35)',
@@ -172,25 +172,25 @@ export default function DistributionPage() {
             style={{ background: 'rgba(255, 143, 28, 0.15)' }}
           />
 
-          {/* Contenedor de la imagen */}
-          <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 h-[90%] w-1/2 sm:w-2/5 flex items-center justify-end pointer-events-none">
-            <AppImage
-              src="/assets/images/welcomebanner.png"
-              alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
-              width={400}
-              height={300}
-              className="h-full w-auto object-contain -translate-x-6 sm:-translate-x-12 filter contrast-125 brightness-110 drop-shadow-[0_0_20px_rgba(255,143,28,0.5)]"
-            />
-          </div>
-
-          {/* Texto desplazado más a la derecha con un margen inicial (pl-6 sm:pl-12) */}
-          <div className="relative z-10 pl-8 sm:pl-16 pr-6 py-4 max-w-[85%] sm:max-w-[65%]">
+          {/* Texto de bienvenida con su espacio reservado */}
+          <div className="relative z-10 w-full sm:max-w-[60%] order-2 sm:order-1">
             <h1 className="text-white text-2xl sm:text-4xl font-black leading-tight drop-shadow-md">
               ¡Te damos la bienvenida{userName ? `, ${userName}` : ''}!
             </h1>
             <p className="text-slate-200 text-sm sm:text-base font-medium mt-2 drop-shadow">
               Elige una herramienta para impulsar tu negocio.
             </p>
+          </div>
+
+          {/* Imagen adaptada: en móvil ocupa su propio espacio visible abajo/centrada, en PC va a la derecha */}
+          <div className="relative z-10 w-full sm:w-2/5 h-[140px] sm:h-full flex items-center justify-center sm:justify-end order-1 sm:order-2 pointer-events-none">
+            <AppImage
+              src="/assets/images/welcomebanner.png"
+              alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
+              width={400}
+              height={300}
+              className="h-full max-h-[160px] sm:max-h-none w-auto object-contain sm:-translate-x-6 filter contrast-125 brightness-110 drop-shadow-[0_0_20px_rgba(255,143,28,0.5)]"
+            />
           </div>
         </section>
 
