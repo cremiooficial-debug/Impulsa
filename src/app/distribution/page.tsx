@@ -185,7 +185,7 @@ export default function DistributionPage() {
           {/* Imagen adaptada con altura controlada para evitar que se vea enorme en PC */}
           <div className="relative z-10 w-full sm:w-2/5 flex items-center justify-center sm:justify-end order-1 sm:order-2 pointer-events-none">
             <AppImage
-              src="/assets/images/welcomebanner.png"
+              src="/assets/images/banner.png"
               alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
               width={400}
               height={300}
