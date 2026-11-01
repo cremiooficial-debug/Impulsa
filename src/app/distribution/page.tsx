@@ -11,6 +11,7 @@ interface MenuItem {
   description: string;
   image: string;
   alt: string;
+  href?: string;
 }
 
 const MENU_ITEMS: MenuItem[] = [
@@ -31,6 +32,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Controla lo que gastas según cuánto produces y vendes.',
     image: '/assets/images/iconcv.png',
     alt: 'Gráfico de barras ascendente con una flecha naranja de tendencia',
+    href: '/costos-variables',
   },
   {
     title: 'Costos Fijos',
@@ -199,6 +201,9 @@ export default function DistributionPage() {
             <button
               key={item.title}
               type="button"
+              onClick={() => {
+                if (item.href) router.push(item.href);
+              }}
               className="group w-full flex items-center gap-4 sm:gap-5 p-4 sm:p-5 rounded-3xl bg-[#0B2540]/75 backdrop-blur-md text-left shadow-xl transition-all duration-300 hover:scale-[1.02] hover:bg-[#0B2540]/95 hover:shadow-[0_8px_30px_rgba(255,143,28,0.3)] active:scale-[0.98] cursor-pointer border border-white/10 hover:border-[#FF8F1C]"
             >
               <div 

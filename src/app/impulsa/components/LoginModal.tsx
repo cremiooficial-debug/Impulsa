@@ -46,12 +46,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setErrorMsg('');
 
     try {
-      const { data, error } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('email', email.trim())
-        .eq('password', password.trim())
-        .maybeSingle();
+      const { data: rows, error } = await supabase.rpc('login_usuario', {
+        p_email: email.trim(),
+        p_password: password.trim(),
+      });
 
       if (error) {
         console.error('Supabase error:', error);
@@ -59,6 +57,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setErrorMsg(`Error DB: ${error.message}`);
         return;
       }
+
+      const data = Array.isArray(rows) ? rows[0] : rows;
 
       if (!data) {
         setIsLoading(false);

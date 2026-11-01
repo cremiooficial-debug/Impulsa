@@ -13,7 +13,7 @@ const graduates = [
   timeToJob: '11 days post-cert',
   quote:
   "I was the athlete who knew more than the coach on the floor. Now I run the floor. Impulsa turned that knowledge into credentials.",
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_14dcfba0a-1769410672969.png",
+  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_1ed2e2665-1764635138601.png",
   badge: 'CF-L1',
   stars: 5
 },
@@ -26,7 +26,7 @@ const graduates = [
   timeToJob: 'Self-employed, Q1 2025',
   quote:
   "I kept losing PT clients to the CrossFit box down the street. Twelve weeks later, I'm building my own box in East Austin.",
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_1ea507857-1768555582506.png",
+  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_466b223b5-1793543738934.png",
   badge: 'CF-L1',
   stars: 5
 },
@@ -39,7 +39,7 @@ const graduates = [
   timeToJob: 'Immediate — internal hire',
   quote:
   "I needed credentialed coaches yesterday. Impulsa\'s cohort model let me put two staff members through simultaneously. Problem solved.",
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_16d7da088-1767641913366.png",
+  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_15890a356-1774940607939.png",
   badge: 'CF-L1',
   stars: 5
 }];
