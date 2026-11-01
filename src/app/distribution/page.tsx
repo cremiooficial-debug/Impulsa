@@ -158,7 +158,7 @@ export default function DistributionPage() {
       </header>
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
-        {/* Banner de bienvenida responsivo: en celular se apila (flex-col) y en PC se pone lado a lado (sm:flex-row) */}
+        {/* Banner de bienvenida responsivo corregido */}
         <section
           className="relative overflow-hidden rounded-3xl mb-8 flex flex-col sm:flex-row items-center justify-between shadow-2xl p-6 sm:p-8 gap-4"
           style={{
@@ -182,14 +182,14 @@ export default function DistributionPage() {
             </p>
           </div>
 
-          {/* Imagen adaptada: en móvil ocupa su propio espacio visible abajo/centrada, en PC va a la derecha */}
-          <div className="relative z-10 w-full sm:w-2/5 h-[140px] sm:h-full flex items-center justify-center sm:justify-end order-1 sm:order-2 pointer-events-none">
+          {/* Imagen adaptada con altura controlada para evitar que se vea enorme en PC */}
+          <div className="relative z-10 w-full sm:w-2/5 flex items-center justify-center sm:justify-end order-1 sm:order-2 pointer-events-none">
             <AppImage
               src="/assets/images/welcomebanner.png"
               alt="Ilustración de línea naranja de una cabeza con un cerebro en forma de bombilla"
               width={400}
               height={300}
-              className="h-full max-h-[160px] sm:max-h-none w-auto object-contain sm:-translate-x-6 filter contrast-125 brightness-110 drop-shadow-[0_0_20px_rgba(255,143,28,0.5)]"
+              className="max-h-[130px] sm:max-h-[190px] w-auto object-contain filter contrast-125 brightness-110 drop-shadow-[0_0_20px_rgba(255,143,28,0.5)]"
             />
           </div>
         </section>
