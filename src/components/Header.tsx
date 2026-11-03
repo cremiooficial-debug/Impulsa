@@ -62,7 +62,7 @@ const Header: React.FC = () => {
           </nav>
 
           {/* Botones de acción (CTA) */}
-          <div className="flex items-center shrink-0">
+          <div className="flex items-center gap-3 sm:gap-6 md:gap-10 shrink-0">
             {/* Botón Ingresa */}
             <button
               onClick={() => setIsLoginOpen(true)}
@@ -72,6 +72,22 @@ const Header: React.FC = () => {
               <Icon name="UserIcon" size={16} className="text-[#FF8F1C] sm:w-[18px] sm:h-[18px]" />
               <span>Ingresa</span>
             </button>
+
+            {/* Botón Inscríbete */}
+            <a
+              href="#register"
+              className="cta-pulse inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all duration-200 hover:scale-105"
+              style={{
+                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                background: 'linear-gradient(135deg, #FF8F1C 0%, #FF7300 100%)',
+                color: '#030C16',
+                boxShadow: '0 4px 20px rgba(255, 143, 28, 0.35)',
+                letterSpacing: '0.03em',
+              }}
+            >
+              Postulate
+              <Icon name="ArrowRightIcon" size={14} />
+            </a>
           </div>
         </div>
       </header>

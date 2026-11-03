@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import Icon from '@/components/ui/AppIcon';
+import { UNITS } from '@/lib/units';
 
 interface CostRow {
   id: string;
@@ -33,7 +34,7 @@ const CostList: React.FC<CostListProps> = ({
   table,
   nameColumn,
   costColumn,
-  hasUnit = false,
+  hasUnit = true,
   namePlaceholder,
   emptyText,
   usuario,
@@ -45,8 +46,9 @@ const CostList: React.FC<CostListProps> = ({
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
-  const [unit, setUnit] = useState('');
-  const [cost, setCost] = useState('');
+  const [unit, setUnit] = useState('und');
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
 
   const loadRows = useCallback(async () => {
     if (!usuario) return;
@@ -62,16 +64,21 @@ const CostList: React.FC<CostListProps> = ({
       setErrorMsg(error.message);
       setRows([]);
     } else {
-      const mapped: CostRow[] = (data ?? []).map((r: Record<string, any>) => ({
-        id: r?.id,
-        name: r?.[nameColumn] ?? '',
-        detail: hasUnit ? (r?.unidad ?? '') : '',
-        cost: Number(r?.[costColumn]) || 0,
-      }));
+      const mapped: CostRow[] = (data ?? []).map((r: Record<string, any>) => {
+        const qty = Number(r?.cantidad_comprada) || 0;
+        const purchasePrice = Number(r?.precio_compra) || 0;
+        const calculated = qty > 0 ? purchasePrice / qty : Number(r?.[costColumn]) || 0;
+        return {
+          id: r?.id,
+          name: r?.[nameColumn] ?? '',
+          detail: r?.unidad ? `por ${r.unidad}` : '',
+          cost: calculated,
+        };
+      });
       setRows(mapped);
     }
     setLoading(false);
-  }, [usuario, table, nameColumn, costColumn, hasUnit]);
+  }, [usuario, table, nameColumn, costColumn]);
 
   useEffect(() => {
     loadRows();
@@ -80,6 +87,12 @@ const CostList: React.FC<CostListProps> = ({
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
+    const qty = Number(quantity) || 0;
+    const purchasePrice = Number(price) || 0;
+    if (qty <= 0) {
+      setErrorMsg('Las cantidades compradas deben ser mayores a 0.');
+      return;
+    }
     setSaving(true);
     setErrorMsg('');
 
@@ -87,17 +100,20 @@ const CostList: React.FC<CostListProps> = ({
       usuario,
       dependencia,
       [nameColumn]: name.trim(),
-      [costColumn]: Number(cost) || 0,
+      cantidad_comprada: qty,
+      precio_compra: purchasePrice,
+      [costColumn]: purchasePrice / qty,
+      unidad: unit || 'und',
     };
-    if (hasUnit) payload.unidad = unit.trim() || 'und';
 
     const { error } = await supabase.from(table).insert(payload);
     if (error) {
       setErrorMsg(error.message);
     } else {
       setName('');
-      setUnit('');
-      setCost('');
+      setUnit('und');
+      setQuantity('');
+      setPrice('');
       setShowForm(false);
       await loadRows();
     }
@@ -149,24 +165,39 @@ const CostList: React.FC<CostListProps> = ({
             className={inputClass}
             required
           />
+          <select
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            aria-label="Unidad de compra"
+            className={inputClass}
+          >
+            {UNITS.map((u) => (
+              <option key={u.value} value={u.value}>
+                {u.label}
+              </option>
+            ))}
+          </select>
           <div className="grid grid-cols-2 gap-3">
-            {hasUnit && (
-              <input
-                type="text"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-                placeholder="Unidad (kg, lt, und)"
-                className={inputClass}
-              />
-            )}
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              placeholder="Cantidades compradas"
+              aria-label="Cantidades compradas"
+              className={inputClass}
+              required
+            />
             <input
               type="number"
               min="0"
               step="0.01"
-              value={cost}
-              onChange={(e) => setCost(e.target.value)}
-              placeholder="Costo"
-              className={`${inputClass} ${hasUnit ? '' : 'col-span-2'}`}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Precio de compra"
+              aria-label="Precio de compra"
+              className={inputClass}
               required
             />
           </div>
@@ -200,9 +231,12 @@ const CostList: React.FC<CostListProps> = ({
                 <p className="text-white text-sm font-bold truncate">{row.name}</p>
                 {row.detail && <p className="text-slate-400 text-xs">{row.detail}</p>}
               </div>
-              <span className="text-[#FF8F1C] text-sm font-extrabold whitespace-nowrap">
-                {formatCost(row.cost)}
-              </span>
+              <div className="text-right">
+                <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-wide">Costo</p>
+                <span className="text-[#FF8F1C] text-sm font-extrabold whitespace-nowrap">
+                  {formatCost(row.cost)}
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => handleDelete(row.id)}

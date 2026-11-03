@@ -28,17 +28,11 @@ const MENU_ITEMS: MenuItem[] = [
     alt: 'Calculadora con monedas y una hoja de cálculo',
   },
   {
-    title: 'Costos Variables',
-    description: 'Controla lo que gastas según cuánto produces y vendes.',
+    title: 'Estructura de Costos',
+    description: 'Gestiona tus costos variables, costos fijos y los productos de tu negocio.',
     image: '/assets/images/iconcv.png',
     alt: 'Gráfico de barras ascendente con una flecha naranja de tendencia',
     href: '/costos-variables',
-  },
-  {
-    title: 'Costos Fijos',
-    description: 'Organiza alquiler, servicios y gastos que se repiten cada mes.',
-    image: '/assets/images/iconcf.png',
-    alt: 'Bolsa de dinero con símbolo de dólar junto a una diana con flecha',
   },
   {
     title: 'Proyecciones',
