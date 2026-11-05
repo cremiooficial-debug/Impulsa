@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import Icon from '@/components/ui/AppIcon';
 import LoginLogo from '@/components/ui/LoginLogo';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,8 +16,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [redirectAfterSuccess, setRedirectAfterSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const router = useRouter();
+  const { signIn, signUp } = useAuth();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -31,7 +35,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (!isOpen) {
       setSuccess(false);
+      setIsSignUp(false);
       setIsLoading(false);
+      setSuccessMessage('');
+      setRedirectAfterSuccess(false);
       setErrorMsg('');
       setEmail('');
       setPassword('');
@@ -46,39 +53,29 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setErrorMsg('');
 
     try {
-      const { data: rows, error } = await supabase.rpc('login_usuario', {
-        p_email: email.trim(),
-        p_password: password.trim(),
-      });
-
-      if (error) {
-        console.error('Supabase error:', error);
-        setIsLoading(false);
-        setErrorMsg(`Error DB: ${error.message}`);
-        return;
+      const normalizedEmail = email.trim().toLowerCase();
+      if (isSignUp) {
+        const hasSession = await signUp(normalizedEmail, password);
+        setSuccessMessage(
+          hasSession
+            ? 'Tu cuenta está lista. Ya puedes acceder a IMPULSA UCV.'
+            : 'Revisa tu correo y confirma la cuenta para poder iniciar sesión.'
+        );
+        setRedirectAfterSuccess(hasSession);
+      } else {
+        await signIn(normalizedEmail, password);
+        setSuccessMessage('Bienvenido de vuelta a IMPULSA UCV.');
+        setRedirectAfterSuccess(true);
       }
-
-      const data = Array.isArray(rows) ? rows[0] : rows;
-
-      if (!data) {
-        setIsLoading(false);
-        setErrorMsg('Correo o contraseña incorrectos.');
-        return;
-      }
-
-      localStorage.setItem('user_session', JSON.stringify(data));
-      setIsLoading(false);
       setSuccess(true);
-
-      setTimeout(() => {
-        onClose();
-        router.push('/distribution');
-      }, 1000);
-
-    } catch (err: any) {
-      console.error('Error en el login:', err);
+    } catch (error) {
+      setErrorMsg(
+        error instanceof Error
+          ? error.message
+          : 'Ocurrió un error al conectar con el servicio de autenticación.'
+      );
+    } finally {
       setIsLoading(false);
-      setErrorMsg(`Error: ${err?.message || 'Ocurrió un error al conectar con la base de datos.'}`);
     }
   };
 
@@ -115,21 +112,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <Icon name="CheckCircleIcon" size={28} style={{ color: '#030C16' }} />
             </div>
             <h3 id="login-modal-title" className="text-white text-xl font-extrabold mb-2">
-              Sesión iniciada
+              {redirectAfterSuccess ? 'Operación completada' : 'Confirma tu correo'}
             </h3>
             <p className="text-slate-300 text-sm font-medium mb-6">
-              Bienvenido de vuelta a IMPULSA UCV.
+              {successMessage}
             </p>
             <button
               type="button"
               onClick={() => {
                 onClose();
-                router.push('/distribution');
+                if (redirectAfterSuccess) router.push('/distribution');
               }}
               className="w-full py-3 rounded-xl font-black text-sm uppercase tracking-wider text-[#030C16] cursor-pointer"
               style={{ background: 'linear-gradient(135deg, #FF8F1C 0%, #FF7300 100%)' }}
             >
-              Continuar
+              {redirectAfterSuccess ? 'Continuar' : 'Cerrar'}
             </button>
           </div>
         ) : (
@@ -140,10 +137,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <LoginLogo />
               </div>
               <h3 id="login-modal-title" className="text-white text-xl sm:text-2xl font-extrabold mb-1 text-center">
-                Inicia sesión
+                {isSignUp ? 'Crea tu cuenta' : 'Inicia sesión'}
               </h3>
               <p className="text-slate-400 text-xs sm:text-sm font-medium text-center">
-                Accede a tu cuenta de IMPULSA UCV.
+                {isSignUp ? 'Regístrate para acceder a IMPULSA UCV.' : 'Accede a tu cuenta de IMPULSA UCV.'}
               </p>
             </div>
 
@@ -198,9 +195,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                   boxShadow: '0 8px 30px rgba(255, 143, 28, 0.45)',
                 }}
               >
-                {isLoading ? 'Verificando...' : 'Iniciar sesión'}
+                {isLoading
+                  ? 'Procesando...'
+                  : isSignUp
+                    ? 'Crear cuenta'
+                    : 'Iniciar sesión'}
               </button>
             </form>
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp((value) => !value);
+                setErrorMsg('');
+              }}
+              className="mt-4 w-full text-center text-xs font-bold text-slate-300 hover:text-[#FF8F1C] transition-colors"
+            >
+              {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Crear una'}
+            </button>
           </>
         )}
       </div>

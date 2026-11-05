@@ -9,9 +9,10 @@ import RecipeEditor, { CatalogItem, ProductSummary } from './components/RecipeEd
 interface ProductosContentProps {
   usuario: string;
   dependencia: string;
+  ownerId: string;
 }
 
-const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependencia }) => {
+const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependencia, ownerId }) => {
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [selectedId, setSelectedId] = useState<string>('');
@@ -30,11 +31,11 @@ const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependenci
       supabase
         .from('productos_receta')
         .select('*')
-        .eq('usuario', usuario)
+        .eq('owner_id', ownerId)
         .order('fecha', { ascending: false }),
-      supabase.from('materiales').select('*').eq('usuario', usuario),
-      supabase.from('empaques').select('*').eq('usuario', usuario),
-      supabase.from('etiquetas').select('*').eq('usuario', usuario),
+      supabase.from('materiales').select('*').eq('owner_id', ownerId),
+      supabase.from('empaques').select('*').eq('owner_id', ownerId),
+      supabase.from('etiquetas').select('*').eq('owner_id', ownerId),
     ]);
 
     const firstError = prod.error ?? mat.error ?? emp.error ?? eti.error;
@@ -75,7 +76,7 @@ const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependenci
     setProducts(mapped);
     setSelectedId((prev) => (prev && mapped.some((p) => p.id === prev) ? prev : mapped[0]?.id ?? ''));
     setLoading(false);
-  }, [usuario]);
+  }, [ownerId, usuario]);
 
   useEffect(() => {
     loadAll();
@@ -88,7 +89,7 @@ const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependenci
     setErrorMsg('');
     const { data, error } = await supabase
       .from('productos_receta')
-      .insert({ usuario, dependencia, nombre: name.trim() })
+      .insert({ owner_id: ownerId, usuario, dependencia, nombre: name.trim() })
       .select()
       .single();
     if (error) {
@@ -238,8 +239,8 @@ export default function ProductosPage() {
       highlight="Productos"
       subtitle="Arma tus recetas con materiales, empaques y etiquetas."
     >
-      {({ usuario, dependencia }) => (
-        <ProductosContent usuario={usuario} dependencia={dependencia} />
+      {({ usuario, dependencia, ownerId }) => (
+        <ProductosContent usuario={usuario} dependencia={dependencia} ownerId={ownerId} />
       )}
     </CostosShell>
   );

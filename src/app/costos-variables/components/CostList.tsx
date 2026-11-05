@@ -22,6 +22,7 @@ interface CostListProps {
   emptyText: string;
   usuario: string;
   dependencia: string;
+  ownerId: string;
 }
 
 const formatCost = (value: number): string => {
@@ -39,6 +40,7 @@ const CostList: React.FC<CostListProps> = ({
   emptyText,
   usuario,
   dependencia,
+  ownerId,
 }) => {
   const [rows, setRows] = useState<CostRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ const CostList: React.FC<CostListProps> = ({
     const { data, error } = await supabase
       .from(table)
       .select('*')
-      .eq('usuario', usuario)
+      .eq('owner_id', ownerId)
       .order('fecha', { ascending: false });
 
     if (error) {
@@ -78,7 +80,7 @@ const CostList: React.FC<CostListProps> = ({
       setRows(mapped);
     }
     setLoading(false);
-  }, [usuario, table, nameColumn, costColumn]);
+  }, [ownerId, usuario, table, nameColumn, costColumn]);
 
   useEffect(() => {
     loadRows();
@@ -97,6 +99,7 @@ const CostList: React.FC<CostListProps> = ({
     setErrorMsg('');
 
     const payload: Record<string, any> = {
+      owner_id: ownerId,
       usuario,
       dependencia,
       [nameColumn]: name.trim(),

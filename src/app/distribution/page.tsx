@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AppImage from '@/components/ui/AppImage';
 import AppLogo from '@/components/ui/AppLogo';
 import Icon from '@/components/ui/AppIcon';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MenuItem {
   title: string;
@@ -50,28 +51,31 @@ const MENU_ITEMS: MenuItem[] = [
 
 export default function DistributionPage() {
   const router = useRouter();
+  const { user, loading, signOut } = useAuth();
   const [userName, setUserName] = useState('');
   const [ready, setReady] = useState(false);
+  const [logoutError, setLogoutError] = useState('');
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('user_session');
-      if (!raw) {
-        router.replace('/impulsa');
-        return;
-      }
-      const session = JSON.parse(raw);
-      const name: string = session?.nombre || session?.name || session?.email || '';
-      setUserName(name.includes('@') ? name.split('@')[0] : name);
-      setReady(true);
-    } catch {
+    if (loading) return;
+    if (!user?.email) {
       router.replace('/impulsa');
+      return;
     }
-  }, [router]);
+    const fullName = user.user_metadata?.full_name;
+    const name = typeof fullName === 'string' ? fullName : user.email;
+    setUserName(name.includes('@') ? name.split('@')[0] : name);
+    setReady(true);
+  }, [loading, router, user]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user_session');
-    router.push('/impulsa');
+  const handleLogout = async () => {
+    setLogoutError('');
+    try {
+      await signOut();
+      router.push('/impulsa');
+    } catch (error) {
+      setLogoutError(error instanceof Error ? error.message : 'No se pudo cerrar la sesión.');
+    }
   };
 
   const handleProfile = () => {
@@ -152,6 +156,12 @@ export default function DistributionPage() {
           </div>
         </div>
       </header>
+
+      {logoutError && (
+        <p role="alert" className="relative z-20 px-4 py-2 text-center text-sm text-red-300">
+          No se pudo cerrar la sesión: {logoutError}
+        </p>
+      )}
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 relative z-10">
         {/* Banner de bienvenida responsivo corregido */}

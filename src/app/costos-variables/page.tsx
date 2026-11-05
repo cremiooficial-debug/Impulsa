@@ -11,7 +11,7 @@ export default function CostosVariablesPage() {
       highlight="Variables"
       subtitle="Gestiona tus materiales, empaques y etiquetas."
     >
-      {({ usuario, dependencia }) => (
+      {({ usuario, dependencia, ownerId }) => (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <CostList
             title="Lista de materiales"
@@ -23,6 +23,7 @@ export default function CostosVariablesPage() {
             emptyText="Aún no tienes materiales registrados."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
           <CostList
             title="Lista de Empaques"
@@ -34,6 +35,7 @@ export default function CostosVariablesPage() {
             emptyText="Aún no tienes empaques registrados."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
           <CostList
             title="Lista de Etiquetas"
@@ -45,6 +47,7 @@ export default function CostosVariablesPage() {
             emptyText="Aún no tienes etiquetas registradas."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
         </div>
       )}

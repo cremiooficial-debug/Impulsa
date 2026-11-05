@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata, Viewport } from 'next';
+import { AuthProvider } from '@/contexts/AuthContext';
 import '../styles/tailwind.css';
 
 export const viewport: Viewport = {
@@ -25,8 +26,8 @@ export default function RootLayout({
   return (
     <html lang="es" className="overflow-x-clip">
       <body className="overflow-x-clip bg-[#030C16] text-white">
-        {children}
-</body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

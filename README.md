@@ -59,11 +59,26 @@ This project uses Tailwind CSS for styling with the following features:
 
 - `npm run dev` - Start development server on port 4028
 - `npm run build` - Build the application for production
-- `npm run start` - Start the development server
+- `npm run start` - Start the production server on port 4028 (run `npm run build` first)
 - `npm run serve` - Start the production server
 - `npm run lint` - Run ESLint to check code quality
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run format` - Format code with Prettier
+
+## 🔐 Authentication and database migration
+
+The app uses Supabase Auth. Enable the email provider and email confirmation in
+Supabase before allowing users to create accounts. Before deploying the new
+login, create or invite existing users in Supabase Auth using the same email
+addresses stored in the application's `usuario` fields, then have them set a
+new password. Apply the migration
+`supabase/migrations/20261105100000_supabase_auth_rls.sql` before deploying the
+app: it removes the legacy password login, drops the old password column, and
+limits each data row to its authenticated owner.
+
+Existing data is linked to Supabase accounts by email when the migration runs.
+Rows without a matching Auth account are retained but remain inaccessible until
+they are linked by an administrator.
 
 ## 📱 Deployment
 

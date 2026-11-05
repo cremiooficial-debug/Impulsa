@@ -11,7 +11,7 @@ export default function CostosFijosPage() {
       highlight="Fijos"
       subtitle="Organiza el personal, los equipos y los servicios que pagas cada mes."
     >
-      {({ usuario, dependencia }) => (
+      {({ usuario, dependencia, ownerId }) => (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <FixedCostList
             title="Personal"
@@ -20,6 +20,7 @@ export default function CostosFijosPage() {
             emptyText="Aún no tienes personal registrado."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
           <FixedCostList
             title="Equipos"
@@ -28,6 +29,7 @@ export default function CostosFijosPage() {
             emptyText="Aún no tienes equipos registrados."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
           <FixedCostList
             title="Servicios"
@@ -36,6 +38,7 @@ export default function CostosFijosPage() {
             emptyText="Aún no tienes servicios registrados."
             usuario={usuario}
             dependencia={dependencia}
+            ownerId={ownerId}
           />
         </div>
       )}

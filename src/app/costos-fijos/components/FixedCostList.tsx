@@ -14,6 +14,7 @@ interface FixedCostListProps {
   emptyText: string;
   usuario: string;
   dependencia: string;
+  ownerId: string;
 }
 
 interface FixedRow {
@@ -49,6 +50,7 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
   emptyText,
   usuario,
   dependencia,
+  ownerId,
 }) => {
   const cfg = CONFIG[kind];
   const [rows, setRows] = useState<FixedRow[]>([]);
@@ -69,7 +71,7 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
     const { data, error } = await supabase
       .from(table)
       .select('*')
-      .eq('usuario', usuario)
+      .eq('owner_id', ownerId)
       .order('fecha', { ascending: false });
 
     if (error) {
@@ -91,7 +93,7 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
       setRows(mapped);
     }
     setLoading(false);
-  }, [usuario, table, kind, cfg.nameColumn, cfg.detailColumn]);
+  }, [ownerId, usuario, table, kind, cfg.nameColumn, cfg.detailColumn]);
 
   useEffect(() => {
     loadRows();
@@ -114,6 +116,7 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
     setErrorMsg('');
 
     const payload: Record<string, any> = {
+      owner_id: ownerId,
       usuario,
       dependencia,
       [cfg.nameColumn]: name.trim(),

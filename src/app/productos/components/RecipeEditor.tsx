@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import Icon from '@/components/ui/AppIcon';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   calcIngredientCost,
   formatMoney,
@@ -51,6 +52,7 @@ const TYPE_LABEL: Record<IngredientType, string> = {
 };
 
 const RecipeEditor: React.FC<RecipeEditorProps> = ({ product, catalog, onChanged }) => {
+  const { user } = useAuth();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
@@ -141,11 +143,16 @@ const RecipeEditor: React.FC<RecipeEditorProps> = ({ product, catalog, onChanged
     e.preventDefault();
     const q = Number(qty) || 0;
     if (!itemId || !unit || q <= 0) return;
+    if (!user?.email) {
+      setErrorMsg('Inicia sesión para guardar ingredientes.');
+      return;
+    }
     setSaving(true);
     setErrorMsg('');
     const { error } = await supabase.from('producto_ingredientes').insert({
+      owner_id: user.id,
       producto_id: product.id,
-      usuario: (await getUsuario()) ?? '',
+      usuario: user.email,
       tipo: type,
       item_id: itemId,
       cantidad: q,
@@ -384,15 +391,5 @@ const RecipeEditor: React.FC<RecipeEditorProps> = ({ product, catalog, onChanged
     </div>
   );
 };
-
-async function getUsuario(): Promise<string | null> {
-  try {
-    const raw = localStorage.getItem('user_session');
-    if (!raw) return null;
-    return JSON.parse(raw)?.email ?? null;
-  } catch {
-    return null;
-  }
-}
 
 export default RecipeEditor;
