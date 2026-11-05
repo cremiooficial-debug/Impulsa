@@ -15,8 +15,6 @@ interface CostRow {
 interface CostListProps {
   title: string;
   table: 'materiales' | 'empaques' | 'etiquetas';
-  nameColumn: 'material' | 'empaque' | 'etiqueta';
-  costColumn: 'costo_unitario' | 'costo';
   hasUnit?: boolean;
   namePlaceholder: string;
   emptyText: string;
@@ -33,8 +31,6 @@ const formatCost = (value: number): string => {
 const CostList: React.FC<CostListProps> = ({
   title,
   table,
-  nameColumn,
-  costColumn,
   hasUnit = true,
   namePlaceholder,
   emptyText,
@@ -66,21 +62,24 @@ const CostList: React.FC<CostListProps> = ({
       setErrorMsg(error.message);
       setRows([]);
     } else {
-      const mapped: CostRow[] = (data ?? []).map((r: Record<string, any>) => {
-        const qty = Number(r?.cantidad_comprada) || 0;
-        const purchasePrice = Number(r?.precio_compra) || 0;
-        const calculated = qty > 0 ? purchasePrice / qty : Number(r?.[costColumn]) || 0;
+      const mapped: CostRow[] = (data ?? []).map((r) => {
+        const qty = Number(r.cantidad_comprada) || 0;
+        const purchasePrice = Number(r.precio_compra) || 0;
+        const storedCost = 'costo_unitario' in r ? r.costo_unitario : r.costo;
+        const calculated = qty > 0 ? purchasePrice / qty : Number(storedCost) || 0;
+        const itemName =
+          'material' in r ? r.material : 'empaque' in r ? r.empaque : r.etiqueta;
         return {
-          id: r?.id,
-          name: r?.[nameColumn] ?? '',
-          detail: r?.unidad ? `por ${r.unidad}` : '',
+          id: r.id,
+          name: itemName,
+          detail: `por ${r.unidad}`,
           cost: calculated,
         };
       });
       setRows(mapped);
     }
     setLoading(false);
-  }, [ownerId, usuario, table, nameColumn, costColumn]);
+  }, [ownerId, usuario, table]);
 
   useEffect(() => {
     loadRows();
@@ -98,18 +97,28 @@ const CostList: React.FC<CostListProps> = ({
     setSaving(true);
     setErrorMsg('');
 
-    const payload: Record<string, any> = {
+    const common = {
       owner_id: ownerId,
       usuario,
       dependencia,
-      [nameColumn]: name.trim(),
       cantidad_comprada: qty,
       precio_compra: purchasePrice,
-      [costColumn]: purchasePrice / qty,
       unidad: unit || 'und',
     };
 
-    const { error } = await supabase.from(table).insert(payload);
+    const costPerUnit = purchasePrice / qty;
+    const { error } =
+      table === 'materiales'
+        ? await supabase
+            .from('materiales')
+            .insert({ ...common, material: name.trim(), costo_unitario: costPerUnit })
+        : table === 'empaques'
+          ? await supabase
+              .from('empaques')
+              .insert({ ...common, empaque: name.trim(), costo: costPerUnit })
+          : await supabase
+              .from('etiquetas')
+              .insert({ ...common, etiqueta: name.trim(), costo: costPerUnit });
     if (error) {
       setErrorMsg(error.message);
     } else {

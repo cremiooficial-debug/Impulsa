@@ -16,8 +16,6 @@ export default function CostosVariablesPage() {
           <CostList
             title="Lista de materiales"
             table="materiales"
-            nameColumn="material"
-            costColumn="costo_unitario"
             hasUnit
             namePlaceholder="Nombre del material"
             emptyText="Aún no tienes materiales registrados."
@@ -28,8 +26,6 @@ export default function CostosVariablesPage() {
           <CostList
             title="Lista de Empaques"
             table="empaques"
-            nameColumn="empaque"
-            costColumn="costo"
             hasUnit
             namePlaceholder="Nombre del empaque"
             emptyText="Aún no tienes empaques registrados."
@@ -40,8 +36,6 @@ export default function CostosVariablesPage() {
           <CostList
             title="Lista de Etiquetas"
             table="etiquetas"
-            nameColumn="etiqueta"
-            costColumn="costo"
             hasUnit
             namePlaceholder="Nombre de la etiqueta"
             emptyText="Aún no tienes etiquetas registradas."

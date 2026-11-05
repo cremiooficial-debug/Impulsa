@@ -26,17 +26,15 @@ interface FixedRow {
 
 const CONFIG: Record<
   FixedCostListProps['kind'],
-  { nameColumn: string; namePlaceholder: string; detailColumn?: string; detailPlaceholder?: string }
+  { namePlaceholder: string; detailColumn?: string; detailPlaceholder?: string }
 > = {
   personal: {
-    nameColumn: 'nombre',
     namePlaceholder: 'Nombre de la persona',
     detailColumn: 'cargo',
     detailPlaceholder: 'Cargo',
   },
-  equipos: { nameColumn: 'equipo', namePlaceholder: 'Nombre del equipo' },
+  equipos: { namePlaceholder: 'Nombre del equipo' },
   servicios: {
-    nameColumn: 'servicio',
     namePlaceholder: 'Nombre del servicio',
     detailColumn: 'proveedor',
     detailPlaceholder: 'Proveedor',
@@ -78,22 +76,23 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
       setErrorMsg(error.message);
       setRows([]);
     } else {
-      const mapped: FixedRow[] = (data ?? []).map((r: Record<string, any>) => {
-        let det = cfg.detailColumn ? (r?.[cfg.detailColumn] ?? '') : '';
-        if (kind === 'equipos') {
-          det = `Compra ${formatMoney(Number(r?.precio_compra) || 0)} · ${Number(r?.vida_util_meses) || 0} meses`;
+      const mapped: FixedRow[] = (data ?? []).map((r) => {
+        const name = 'nombre' in r ? r.nombre : 'equipo' in r ? r.equipo : r.servicio;
+        let detail = 'cargo' in r ? r.cargo : 'proveedor' in r ? r.proveedor : '';
+        if ('equipo' in r) {
+          detail = `Compra ${formatMoney(r.precio_compra)} · ${r.vida_util_meses} meses`;
         }
         return {
-          id: r?.id,
-          name: r?.[cfg.nameColumn] ?? '',
-          detail: det,
-          monthly: Number(r?.costo_mensual) || 0,
+          id: r.id,
+          name,
+          detail,
+          monthly: Number(r.costo_mensual) || 0,
         };
       });
       setRows(mapped);
     }
     setLoading(false);
-  }, [ownerId, usuario, table, kind, cfg.nameColumn, cfg.detailColumn]);
+  }, [ownerId, usuario, table, kind, cfg.detailColumn]);
 
   useEffect(() => {
     loadRows();
@@ -115,13 +114,13 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
     setSaving(true);
     setErrorMsg('');
 
-    const payload: Record<string, any> = {
+    const common = {
       owner_id: ownerId,
       usuario,
       dependencia,
-      [cfg.nameColumn]: name.trim(),
     };
 
+    let insertError: string | null = null;
     if (kind === 'equipos') {
       const price = Number(purchase) || 0;
       const life = Number(lifeMonths) || 0;
@@ -130,17 +129,34 @@ const FixedCostList: React.FC<FixedCostListProps> = ({
         setSaving(false);
         return;
       }
-      payload.precio_compra = price;
-      payload.vida_util_meses = life;
-      payload.costo_mensual = price / life;
+      const { error } = await supabase.from('costos_fijos_equipos').insert({
+        ...common,
+        equipo: name.trim(),
+        precio_compra: price,
+        vida_util_meses: life,
+        costo_mensual: price / life,
+      });
+      insertError = error?.message ?? null;
+    } else if (kind === 'personal') {
+      const { error } = await supabase.from('costos_fijos_personal').insert({
+        ...common,
+        nombre: name.trim(),
+        cargo: detail.trim(),
+        costo_mensual: Number(monthly) || 0,
+      });
+      insertError = error?.message ?? null;
     } else {
-      if (cfg.detailColumn) payload[cfg.detailColumn] = detail.trim();
-      payload.costo_mensual = Number(monthly) || 0;
+      const { error } = await supabase.from('costos_fijos_servicios').insert({
+        ...common,
+        servicio: name.trim(),
+        proveedor: detail.trim(),
+        costo_mensual: Number(monthly) || 0,
+      });
+      insertError = error?.message ?? null;
     }
 
-    const { error } = await supabase.from(table).insert(payload);
-    if (error) {
-      setErrorMsg(error.message);
+    if (insertError) {
+      setErrorMsg(insertError);
     } else {
       resetForm();
       setShowForm(false);

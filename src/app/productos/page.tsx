@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import type { Database } from '@/lib/supabase/database.types';
 import Icon from '@/components/ui/AppIcon';
 import CostosShell from '@/app/costos-variables/components/CostosShell';
 import RecipeEditor, { CatalogItem, ProductSummary } from './components/RecipeEditor';
@@ -41,37 +42,39 @@ const ProductosContent: React.FC<ProductosContentProps> = ({ usuario, dependenci
     const firstError = prod.error ?? mat.error ?? emp.error ?? eti.error;
     if (firstError) setErrorMsg(firstError.message);
 
-    const toCatalog = (
-      rows: Record<string, any>[] | null,
-      type: CatalogItem['type'],
-      nameCol: string,
-      costCol: string
-    ): CatalogItem[] =>
+    type CatalogRow =
+      | Database['public']['Tables']['materiales']['Row']
+      | Database['public']['Tables']['empaques']['Row']
+      | Database['public']['Tables']['etiquetas']['Row'];
+
+    const toCatalog = (rows: CatalogRow[] | null, type: CatalogItem['type']): CatalogItem[] =>
       (rows ?? []).map((r) => {
-        const qty = Number(r?.cantidad_comprada) || 0;
-        const price = Number(r?.precio_compra) || 0;
+        const qty = Number(r.cantidad_comprada) || 0;
+        const price = Number(r.precio_compra) || 0;
+        const name = 'material' in r ? r.material : 'empaque' in r ? r.empaque : r.etiqueta;
+        const storedCost = 'costo_unitario' in r ? r.costo_unitario : r.costo;
         return {
-          id: r?.id,
+          id: r.id,
           type,
-          name: r?.[nameCol] ?? '',
-          unit: r?.unidad || 'und',
-          costPerUnit: qty > 0 ? price / qty : Number(r?.[costCol]) || 0,
+          name,
+          unit: r.unidad || 'und',
+          costPerUnit: qty > 0 ? price / qty : Number(storedCost) || 0,
         };
       });
 
     setCatalog([
-      ...toCatalog(mat.data, 'material', 'material', 'costo_unitario'),
-      ...toCatalog(emp.data, 'empaque', 'empaque', 'costo'),
-      ...toCatalog(eti.data, 'etiqueta', 'etiqueta', 'costo'),
+      ...toCatalog(mat.data, 'material'),
+      ...toCatalog(emp.data, 'empaque'),
+      ...toCatalog(eti.data, 'etiqueta'),
     ]);
 
-    const mapped: ProductSummary[] = (prod.data ?? []).map((r: Record<string, any>) => ({
-      id: r?.id,
-      name: r?.nombre ?? '',
-      yieldQty: Number(r?.rendimiento) || 1,
-      fixedCostUnit: Number(r?.costo_fijo_unitario) || 0,
-      profitUnit: Number(r?.ganancia_unitaria) || 0,
-      taxUnit: Number(r?.impuesto_unitario) || 0,
+    const mapped: ProductSummary[] = (prod.data ?? []).map((r) => ({
+      id: r.id,
+      name: r.nombre,
+      yieldQty: Number(r.rendimiento) || 1,
+      fixedCostUnit: Number(r.costo_fijo_unitario) || 0,
+      profitUnit: Number(r.ganancia_unitaria) || 0,
+      taxUnit: Number(r.impuesto_unitario) || 0,
     }));
     setProducts(mapped);
     setSelectedId((prev) => (prev && mapped.some((p) => p.id === prev) ? prev : mapped[0]?.id ?? ''));

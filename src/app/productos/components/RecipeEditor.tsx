@@ -88,12 +88,12 @@ const RecipeEditor: React.FC<RecipeEditorProps> = ({ product, catalog, onChanged
       setIngredients([]);
     } else {
       setIngredients(
-        (data ?? []).map((r: Record<string, any>) => ({
-          id: r?.id,
-          type: r?.tipo as IngredientType,
-          itemId: r?.item_id,
-          quantity: Number(r?.cantidad) || 0,
-          unit: r?.unidad ?? 'und',
+        (data ?? []).map((r) => ({
+          id: r.id,
+          type: r.tipo,
+          itemId: r.item_id,
+          quantity: Number(r.cantidad) || 0,
+          unit: r.unidad ?? 'und',
         }))
       );
     }
